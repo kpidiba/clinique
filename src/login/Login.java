@@ -22,7 +22,7 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import javaswingdev.Notification;
+import notification.Notification;
 import javax.swing.JOptionPane;
 
 /**
@@ -40,6 +40,7 @@ public class Login extends javax.swing.JFrame {
     private final double loginSize = 60;
     PreparedStatement pst;
     ResultSet rst;
+    Notification Not;
 
     /**
      * Creates new form Login
@@ -52,8 +53,6 @@ public class Login extends javax.swing.JFrame {
     public void init() {
         layout = new MigLayout("fill, insets 0");
         cover = new PanelCover();
-//        Notification Not = new Notification(this, Notification.Type.WARNING, Notification.Location.CENTER, "akak");
-//            Not.show();
         ActionListener eventLogin = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -61,9 +60,7 @@ public class Login extends javax.swing.JFrame {
                     login();
                 } catch (Exception ex) {
                     Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-//                    notification("w", "Echec de Connexion");
-                    JOptionPane.showMessageDialog(null, "Echec de Connexion");
-
+                    notification("w", "Echec de Connexion");
                 }
             }
         };
@@ -84,16 +81,17 @@ public class Login extends javax.swing.JFrame {
             pst.setString(2, user.getPassword());
             rst = pst.executeQuery();
             if (rst.next()) {
-                JOptionPane.showMessageDialog(null, "Connection Reussie");
                 setVisible(false);
                 Main M = new Main();
                 M.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(null, "Identifiant Incorrect");
+                Not = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_RIGHT, "Identifiant Incorrect");
+                Not.showNotification();
 
             }
         }else{
-                JOptionPane.showMessageDialog(null, "Veuillez Remplir les champs");
+                Not = new Notification(this, Notification.Type.INFO, Notification.Location.TOP_RIGHT, "Veuillez Remplir les champs");
+                Not.showNotification();
 
         }
 
@@ -103,15 +101,15 @@ public class Login extends javax.swing.JFrame {
 //        new Dashboard().setVisible(true);
     }
 
-//    public void notification(String Type, String Msg) {
-//        if ("w".equals(Type)) {
-//            Notification Not = new Notification(this, Notification.Type.WARNING, Notification.Location.CENTER, Msg);
-//            Not.show();
-//        } else {
-//            Notification Not = new Notification(this, Notification.Type.INFO, Notification.Location.CENTER, Msg);
-//            Not.show();
-//        }
-//    }
+    public void notification(String Type, String Msg) {
+        if ("w".equals(Type)) {
+            Notification Not = new Notification(this, Notification.Type.WARNING, Notification.Location.TOP_RIGHT, Msg);
+            Not.showNotification();
+        } else {
+            Notification Not = new Notification(this, Notification.Type.INFO, Notification.Location.TOP_RIGHT, Msg);
+            Not.showNotification();
+        }
+    }
 
     public void showMessage(Message.MessageType messageType, String message) {
         Message ms = new Message();
